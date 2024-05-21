@@ -1,0 +1,15 @@
+### GET hello
+GET http://localhost:8888/hello
+
+###
+GET http://localhost:8888/gw
+
+### POST GW
+POST http://localhost:8888/gw/com.bruce.durpc.demo.api.UserService
+Content-Type: application/json
+
+{
+  "service": "com.bruce.durpc.demo.api.UserService",
+  "methodSign": "findById@1_int",
+  "args": [100]
+}

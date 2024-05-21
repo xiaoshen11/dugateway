@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: dugateway
+
+server:
+  port: 8888
+
+duregistry:
+  servers: http://localhost:8484
