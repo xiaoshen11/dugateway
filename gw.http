@@ -4,8 +4,8 @@ GET http://localhost:8888/hello
 ###
 GET http://localhost:8888/gw
 
-### POST GW
-POST http://localhost:8888/gw/com.bruce.durpc.demo.api.UserService
+### POST Ga
+POST http://localhost:8888/ga/com.bruce.durpc.demo.api.UserService
 Content-Type: application/json
 
 {
@@ -13,3 +13,18 @@ Content-Type: application/json
   "methodSign": "findById@1_int",
   "args": [100]
 }
+
+### POST Ga mock
+POST http://localhost:8888/ga/com.bruce.durpc.demo.api.UserService?mock=true
+Content-Type: application/json
+
+{
+  "service": "com.bruce.durpc.demo.api.UserService",
+  "methodSign": "findById@1_int",
+  "args": [100]
+}
+
+### GET GA
+GET http://localhost:8888/ga/aaa
+Content-Type: application/json
+
