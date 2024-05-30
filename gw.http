@@ -5,7 +5,7 @@ GET http://localhost:8888/hello
 GET http://localhost:8888/gw
 
 ### POST Ga
-POST http://localhost:8888/ga/com.bruce.durpc.demo.api.UserService
+POST http://localhost:8888/gw/com.bruce.durpc.demo.api.UserService
 Content-Type: application/json
 
 {
@@ -15,7 +15,38 @@ Content-Type: application/json
 }
 
 ### POST Ga mock
-POST http://localhost:8888/ga/com.bruce.durpc.demo.api.UserService?mock=true
+POST http://localhost:8888/gw/com.bruce.durpc.demo.api.UserService?mock=true
+Content-Type: application/json
+
+{
+  "service": "com.bruce.durpc.demo.api.UserService",
+  "methodSign": "findById@1_int",
+  "args": [100]
+}
+
+
+### POST durpc
+POST http://localhost:8888/gw/durpc/com.bruce.durpc.demo.api.UserService
+Content-Type: application/json
+
+{
+  "service": "com.bruce.durpc.demo.api.UserService",
+  "methodSign": "findById@1_int",
+  "args": [100]
+}
+
+### POST direct
+POST http://localhost:8888/gw/direct/com.bruce.durpc.demo.api.UserService
+Content-Type: application/json
+
+{
+  "service": "com.bruce.durpc.demo.api.UserService",
+  "methodSign": "findById@1_int",
+  "args": [100]
+}
+
+### POST direct backend
+POST http://localhost:8888/gw/direct/com.bruce.durpc.demo.api.UserService?backend=http://localhost:8081/durpc
 Content-Type: application/json
 
 {

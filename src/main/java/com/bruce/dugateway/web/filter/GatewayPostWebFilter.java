@@ -1,4 +1,4 @@
-package com.bruce.dugateway;
+package com.bruce.dugateway.web.filter;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;

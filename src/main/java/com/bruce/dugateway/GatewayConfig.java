@@ -12,6 +12,8 @@ import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.bruce.dugateway.GatewayPlugin.GATEWAY_PREFIX;
+
 /**
  * @date 2024/5/21
  */
@@ -28,7 +30,7 @@ public class GatewayConfig {
         return args -> {
             SimpleUrlHandlerMapping handlerMapping = context.getBean(SimpleUrlHandlerMapping.class);
             Properties mappings = new Properties();
-            mappings.put("/ga/**","gatewayWebHandler");
+            mappings.put(GATEWAY_PREFIX + "/**","gatewayWebHandler");
             handlerMapping.setMappings(mappings);
             handlerMapping.initApplicationContext();
             System.out.println("durpc gateway start");

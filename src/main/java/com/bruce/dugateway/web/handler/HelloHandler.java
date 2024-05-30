@@ -1,4 +1,4 @@
-package com.bruce.dugateway;
+package com.bruce.dugateway.web.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
