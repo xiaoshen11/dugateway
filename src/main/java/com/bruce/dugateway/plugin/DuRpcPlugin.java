@@ -1,6 +1,7 @@
 package com.bruce.dugateway.plugin;
 
 import com.bruce.dugateway.AbstractGatewayPlugin;
+import com.bruce.dugateway.GatewayPluginChain;
 import com.bruce.durpc.core.api.LoadBalancer;
 import com.bruce.durpc.core.api.RegistryCenter;
 import com.bruce.durpc.core.cluster.RandomRobinLoadBalancer;
@@ -32,7 +33,7 @@ public class DuRpcPlugin extends AbstractGatewayPlugin {
     LoadBalancer<InstanceMeta> loadBalancer = new RandomRobinLoadBalancer();
 
     @Override
-    public Mono<Void> doHandle(ServerWebExchange exchange) {
+    public Mono<Void> doHandle(ServerWebExchange exchange, GatewayPluginChain chain) {
         System.out.println("======== [DuRpcPlugin] ...");
         // 1.通过请求路径获得服务名
         String service = exchange.getRequest().getPath().value().substring(prefix.length());
@@ -64,7 +65,8 @@ public class DuRpcPlugin extends AbstractGatewayPlugin {
         exchange.getResponse().getHeaders().add("du.gw.plugin", getName());
 
         return body.flatMap(x -> exchange.getResponse()
-                .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(x.getBytes()))));
+                .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(x.getBytes()))))
+                .then(chain.handle(exchange));
     }
 
     @Override

@@ -1,12 +1,7 @@
 package com.bruce.dugateway.plugin;
 
 import com.bruce.dugateway.AbstractGatewayPlugin;
-import com.bruce.durpc.core.api.LoadBalancer;
-import com.bruce.durpc.core.api.RegistryCenter;
-import com.bruce.durpc.core.cluster.RandomRobinLoadBalancer;
-import com.bruce.durpc.core.meta.InstanceMeta;
-import com.bruce.durpc.core.meta.ServiceMeta;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.bruce.dugateway.GatewayPluginChain;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -14,8 +9,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 /**
  * @date 2024/5/30
@@ -27,7 +20,7 @@ public class DirectPlugin extends AbstractGatewayPlugin {
     private String prefix = GATEWAY_PREFIX + "/" + NAME +"/";
 
     @Override
-    public Mono<Void> doHandle(ServerWebExchange exchange) {
+    public Mono<Void> doHandle(ServerWebExchange exchange, GatewayPluginChain chain) {
         System.out.println("======== [DirectPlugin] ...");
         String backend = exchange.getRequest().getQueryParams().getFirst("backend");
         Flux<DataBuffer> requestBody = exchange.getRequest().getBody();
@@ -37,7 +30,7 @@ public class DirectPlugin extends AbstractGatewayPlugin {
         exchange.getResponse().getHeaders().add("du.gw.plugin", getName());
 
         if(backend == null || backend.isEmpty()){
-            return requestBody.flatMap(x -> exchange.getResponse().writeWith(Mono.just(x))).then();
+            return requestBody.flatMap(x -> exchange.getResponse().writeWith(Mono.just(x))).then(chain.handle(exchange));
         }
 
         WebClient client = WebClient.create(backend);
@@ -47,7 +40,8 @@ public class DirectPlugin extends AbstractGatewayPlugin {
         Mono<String> body = entity.map(ResponseEntity::getBody);
 
         return body.flatMap(x -> exchange.getResponse()
-                .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(x.getBytes()))));
+                .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(x.getBytes()))))
+                .then(chain.handle(exchange));
     }
 
     @Override
