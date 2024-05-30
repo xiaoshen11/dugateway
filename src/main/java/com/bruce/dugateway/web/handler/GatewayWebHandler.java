@@ -1,6 +1,7 @@
 package com.bruce.dugateway.web.handler;
 
 import com.bruce.dugateway.DefaultGatewayPluginChain;
+import com.bruce.dugateway.GatewayFilter;
 import com.bruce.dugateway.GatewayPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,9 @@ public class GatewayWebHandler implements WebHandler {
     @Autowired
     List<GatewayPlugin> plugins;
 
+    @Autowired
+    List<GatewayFilter> filters;
+
     @Override
     public Mono<Void> handle(ServerWebExchange exchange) {
         System.out.println(" =====>>> Du Gateway web handler");
@@ -30,12 +34,10 @@ public class GatewayWebHandler implements WebHandler {
                     Mono.just(exchange.getResponse().bufferFactory().wrap(mock.getBytes())));
         }
 
-        return new DefaultGatewayPluginChain(plugins).handle(exchange);
+        for (GatewayFilter filter : filters) {
+            filter.filter(exchange);
+        }
 
-//        for (GatewayPlugin plugin : plugins) {
-//            if(plugin.support(exchange)){
-//                return plugin.handle(exchange);
-//            }
-//        }
+        return new DefaultGatewayPluginChain(plugins).handle(exchange);
     }
 }
